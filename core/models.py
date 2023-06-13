@@ -1,9 +1,10 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    age = models.PositiveSmallIntegerField(null=True)
     birth_date = models.DateField(null=True)
     email = models.EmailField(unique=True)
 
@@ -13,3 +14,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    @property
+    def age(self) -> int:
+        return datetime.now().year - self.birth_date.year
