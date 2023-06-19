@@ -4,7 +4,7 @@ ENV POETRY_VERSION=1.5.1
 
 RUN pip install "poetry==$POETRY_VERSION"
 
-WORKDIR = /opt/todolist
+WORKDIR /opt/todolist
 
 COPY poetry.lock pyproject.toml ./
 

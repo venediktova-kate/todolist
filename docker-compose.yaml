@@ -36,5 +36,27 @@ services:
     ports:
       - "8800:8008"
 
+  collect_static:
+    build: .
+    env_file: .env
+    command: python manage.py collectstatic -c --no-input
+    volumes:
+      - django_static:/opt/todolist/static/
+
+  frontend:
+    image: sermalenk/skypro-front:lesson-34
+    restart: always
+    ports:
+        - "80:80"
+    depends_on:
+      api:
+        condition: service_started
+      collect_static:
+        condition: service_completed_successfully
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - django_static:/usr/share/nginx/html/static
+
 volumes:
   todolist_P9_plata_14:
+  django_static:
