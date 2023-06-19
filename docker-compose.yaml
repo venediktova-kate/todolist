@@ -35,6 +35,12 @@ services:
       DB_HOST: db
     ports:
       - "8800:8008"
+    depends_on:
+      run_migrations:
+        condition: service_completed_successfully
+    volumes:
+      - ./core:/opt/todolist/core
+      - .todolist:/opt/todolist/todolist
 
   collect_static:
     build: .
