@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           mkdir deploy
-          mv docker-compose-server.yaml deploy/docker-compose.yaml
+          mv docker-compose-ci.yaml deploy/docker-compose.yaml
           mv nginx.conf deploy/nginx.conf
 
       - name: Copy on server
