@@ -17,7 +17,7 @@ services:
      retries: 10
 
   run_migrations:
-    image: ${{ secrets.DOCKERHUB_USERNAME }}/todolist:latest
+    image: ${DOCKERHUB_USERNAME}/todolist:latest
     env_file: .env
     depends_on:
       db:
@@ -25,14 +25,14 @@ services:
     command: python manage.py migrate
 
   api:
-    image: ${{ secrets.DOCKERHUB_USERNAME }}/todolist:latest
+    image: ${DOCKERHUB_USERNAME}/todolist:latest
     env_file: .env
     depends_on:
       run_migrations:
         condition: service_completed_successfully
 
   collect_static:
-    image: ${{ secrets.DOCKERHUB_USERNAME }}/todolist:latest
+    image: ${DOCKERHUB_USERNAME}/todolist:latest
     env_file: .env
     command: python manage.py collectstatic -c --no-input
     volumes:
