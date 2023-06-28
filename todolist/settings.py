@@ -61,7 +61,7 @@ DATABASES = {
         'USER': env.str('DB_USER'),
         'PASSWORD': env.str('DB_PASSWORD'),
         'HOST': env.str('DB_HOST', default='127.0.0.1'),
-        'PORT': '5433',
+        'PORT': env.int('DB_PORT', default=5432),
     }
 }
 
