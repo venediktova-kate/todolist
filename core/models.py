@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     birth_date = models.DateField(null=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
 
     class Meta:
         verbose_name = "Пользователь"
