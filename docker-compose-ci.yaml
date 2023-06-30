@@ -9,7 +9,7 @@ services:
      POSTGRES_DB: ${DB_NAME}
      POSTGRES_PASSWORD: ${DB_PASSWORD}
    volumes:
-     - todolist_P9_plata_14:/var/lib/postgresql/data
+     - todolist_bd:/var/lib/postgresql/data
    healthcheck:
      test: pg_isready -U ${DB_USER} -d ${DB_NAME}
      interval: 3s
@@ -53,5 +53,5 @@ services:
       - django_static:/usr/share/nginx/html/static
 
 volumes:
-  todolist_P9_plata_14:
+  todolist_db:
   django_static:
