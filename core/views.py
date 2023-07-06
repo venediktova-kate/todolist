@@ -1,7 +1,7 @@
 from django.contrib.auth import login
 from rest_framework.response import Response
-from rest_framework import generics
-from core.serializers import SignUpSerializer, LoginSerializer
+from rest_framework import generics, permissions
+from core.serializers import SignUpSerializer, LoginSerializer, ProfileSerializer
 
 
 class SignUpView(generics.CreateAPIView):
@@ -23,3 +23,14 @@ class LoginView(generics.CreateAPIView):
         login(request=self.request, user=serializer.save())
 
         return Response(serializer.data)
+
+
+class ProfileView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    View для получения, обновления данных пользователя и логаута
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ProfileSerializer
+
+    def get_object(self):
+        return self.request.user

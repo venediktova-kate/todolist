@@ -61,3 +61,12 @@ class LoginSerializer(serializers.ModelSerializer):
         if not user:
             raise AuthenticationFailed
         return user
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    """
+    Сериалайзер для отображения данных пользователя
+    """
+    class Meta:
+        model = User
+        fields = ["id", "username", "first_name", "last_name", "email"]
