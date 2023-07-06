@@ -1,7 +1,9 @@
 from django.urls import path
-from core.views import SignUpSerializer
+from core.views import SignUpView, LoginView
+
 
 app_name = 'core'
 urlpatterns = [
-    path('signup', SignUpSerializer.as_view(), name='signup'),
+    path('signup', SignUpView.as_view(), name='signup'),
+    path('login', LoginView.as_view(), name='login'),
 ]

@@ -1,4 +1,6 @@
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate
+from rest_framework.exceptions import AuthenticationFailed
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from core.models import User
@@ -37,4 +39,25 @@ class SignUpSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
         )
         user.save()
+        return user
+
+
+class LoginSerializer(serializers.ModelSerializer):
+    """    Сериалайзер для авторизации и аутентификации пользователя
+    """
+    username = serializers.CharField(required=True)
+    password = PasswordField(required=True)
+
+    class Meta:
+        model = User
+        fields = ("id", "username", "first_name", "last_name", "email", "password")
+        read_only_fields = ("id", "first_name", "last_name", "email")
+
+    def create(self, validated_data: dict) -> User:
+        user = authenticate(
+            username=validated_data['username'],
+            password=validated_data['password']
+        )
+        if not user:
+            raise AuthenticationFailed
         return user
