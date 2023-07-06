@@ -1,6 +1,8 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from rest_framework.response import Response
 from rest_framework import generics, permissions
+
+from core.models import User
 from core.serializers import SignUpSerializer, LoginSerializer, ProfileSerializer
 
 
@@ -34,3 +36,6 @@ class ProfileView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         return self.request.user
+
+    def perform_destroy(self, instance: User):
+        logout(self.request)
