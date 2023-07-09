@@ -70,3 +70,32 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "first_name", "last_name", "email"]
+
+
+class UpdatePasswordSerializer(serializers.Serializer):
+    """
+    Сериалайзер для смены пароля
+    """
+    model = User
+
+    old_password = PasswordField(required=True)
+    new_password = PasswordField(required=True)
+
+    def validate_old_password(self, old_password: str) -> str:
+        """
+        Проверка корректности ввода старого пароля
+        """
+        if not self.instance.check_password(old_password):
+            raise ValidationError('Password is incorrect')
+        return old_password
+
+    def update(self, instance: User, validated_data: dict) -> User:
+        """
+        Сохранение нового пароля
+        """
+        instance.set_password(validated_data['new_password'])
+        instance.save()
+        return instance
+
+    def create(self, validated_data):
+        pass
