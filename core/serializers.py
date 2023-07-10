@@ -76,7 +76,6 @@ class UpdatePasswordSerializer(serializers.Serializer):
     """
     Сериалайзер для смены пароля
     """
-    model = User
 
     old_password = PasswordField(required=True)
     new_password = PasswordField(required=True)

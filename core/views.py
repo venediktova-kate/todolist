@@ -45,7 +45,6 @@ class UpdatePasswordView(generics.UpdateAPIView):
     """View для смены пароля"""
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UpdatePasswordSerializer
-    model = User
 
     def get_object(self):
         return self.request.user
