@@ -5,7 +5,7 @@ from envparse import env
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BASE_DIR.joinpath('.env')
 if ENV_PATH.is_file():
-    env. read_envfile(ENV_PATH)
+    env.read_envfile(ENV_PATH)
 
 DEBUG = env.bool('DEBUG')
 SECRET_KEY = env.str('SECRET_KEY')
@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'social_django',
     'core',
     'goals',
 ]
