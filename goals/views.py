@@ -20,7 +20,7 @@ class GoalCategoryListView(ListAPIView):
     model = GoalCategory
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = GoalCategorySerializer
-    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['title', 'created']
     ordering = ['title']
     search = ['title']
@@ -37,6 +37,9 @@ class GoalCategoryDetailsView(generics.RetrieveUpdateDestroyAPIView):
     queryset = GoalCategory.objects.select_related('user').exclude(is_deleted=True)
 
     def perform_destroy(self, instance: GoalCategory) -> None:
+        """
+        При "удалении" категории просто помечаем ее как is_deleted = True
+        """
         with transaction.atomic():
             instance.is_deleted = True
             instance.save(update_fields=['is_deleted'])
