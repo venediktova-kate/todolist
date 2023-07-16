@@ -1,7 +1,8 @@
 from django.urls import path
 
 from goals.views import GoalCategoryCreateView, GoalCategoryListView, GoalCategoryDetailsView, GoalCreateView, \
-    GoalListView, GoalDetailsView, GoalCommentCreateView, GoalCommentListView, GoalCommentDetailsView
+    GoalListView, GoalDetailsView, GoalCommentCreateView, GoalCommentListView, GoalCommentDetailsView, BoardCreateView, \
+    BoardListView, BoardView
 
 urlpatterns = [
     path("goal_category/create", GoalCategoryCreateView.as_view(), name='create_category'),
@@ -15,4 +16,8 @@ urlpatterns = [
     path("goal_comment/create", GoalCommentCreateView.as_view(), name='create_comment'),
     path("goal_comment/list", GoalCommentListView.as_view(), name='list_comment'),
     path('goal_comment/<int:id>', GoalCommentDetailsView.as_view(), name='comment_details'),
+
+    path('board/create', BoardCreateView.as_view(), name='create_board'),
+    path('board/list', BoardListView.as_view(), name='list_board'),
+    path('board/<int:pk>', BoardView.as_view(), name='board_details'),
 ]
