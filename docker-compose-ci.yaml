@@ -14,7 +14,7 @@ services:
      test: pg_isready -U ${DB_USER} -d ${DB_NAME}
      interval: 5s
      timeout: 5s
-     retries: 10
+     retries: 15
 
   run_migrations:
     image: ${DOCKERHUB_USERNAME}/todolist:latest
