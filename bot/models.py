@@ -5,6 +5,10 @@ from core.models import User
 
 
 class TgUser(models.Model):
+    class Meta:
+        verbose_name = "Пользователь Бота"
+        verbose_name_plural = "Пользователи Бота"
+
     chat_id = models.BigIntegerField(primary_key=True, editable=False, unique=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     username = models.CharField(max_length=255, null=True, blank=True)
