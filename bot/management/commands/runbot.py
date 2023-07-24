@@ -1,5 +1,3 @@
-from unittest import case
-
 from django.core.management import BaseCommand
 
 from bot.models import TgUser
@@ -12,6 +10,7 @@ class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tg_client = TgClient()
+        self.offset = 0
 
     def handle(self, *args, **options):
         offset = 0
@@ -24,40 +23,50 @@ class Command(BaseCommand):
                 self.handle_message(item.message)
 
     def handle_message(self, msg: Message) -> None:
+        """
+        Функция возвращает ответ на сообщение не авторизированного пользователя.
+        """
         tg_user, _ = TgUser.objects.get_or_create(chat_id=msg.msg_from.id, defaults={'username': msg.msg_from.username})
         if not tg_user.is_verified:
+            self.tg_client.send_message(msg.msg_from.id, "Здравствуйте!")
             tg_user.update_verification_code()
             self.tg_client.send_message(
                 msg.msg_from.id,
-                text=f"Здравствуйте!\n"
-                     f"Подтвердите свой аккаунт.\n"
-                     f"Для подтверждения необходимо ввести код:{tg_user.verification_code} на сайте.")
+                text=f"Подтвердите Ваш аккаунт.\n"
+                     f"Для подтверждения введите код:{tg_user.verification_code} на сайте.")
         else:
             self.handle_auth_user(tg_user, msg)
 
     def handle_auth_user(self, tg_user: TgUser, msg: Message) -> None:
+        """
+        Функция возвращает ответ на команду пользователя (описаны основные команды представленные ботом).
+        """
         if msg.text and msg.text.startswith('/'):
             match msg.text:
                 case '/goals':
-                    goals = Goal.objects.filter(
-                        user=tg_user.user,
-                        category__is_deleted=False
-                    ).exclude(status=Goal.Status.archived)
-
-                    goals_str = [
-                        f'{goal.id}{goal.title}'
-                        for goal in goals
-                    ]
-                    if goals_str:
-                        self.tg_client.send_message(msg.msg_from.id, '\n'.join(goals_str))
-                    else:
-                        self.tg_client.send_message(msg.msg_from.id, "У вас пока нет добавленных целей")
+                    goals_str = self.get_goals_list(tg_user=tg_user)
+                    self.tg_client.send_message(msg.msg_from.id, goals_str)
                 case '/create':
-                    category = GoalCategory.objects.filter(user=tg_user.user)
+                    pass
+                case '/cancel':
+                    pass
                 case _:
-                    self.tg_client.send_message(msg.msg_from.id, "Неизвестная команда..(")
+                    self.tg_client.send_message(msg.msg_from.id, "Я не знаю такой команды(")
+
+    def get_goals_list(self, tg_user: TgUser) -> str:
+        """
+        Функция возвращает строку со всеми целями пользователя
+        """
+        goals = Goal.objects.filter(user=tg_user.user, category__is_deleted=False).exclude(status=Goal.Status.archived)
+        goals_list: list[str] = [f'Цель: {goal.title}' for goal in goals]
+        if goals_list:
+            goals_str = '\n'.join(goals_list)
         else:
-            self.tg_client.send_message(
-                msg.msg_from.id,
-                "Давайте приступим к работе.\n"
-                "Введите команду начинающуюся со /:")
+            goals_str = 'У вас пока нет добавленных целей'
+        return goals_str
+
+    def get_categories_list(self, tg_user: TgUser):
+        pass
+
+    def create_new_goal(self, tg_user: TgUser, category: GoalCategory):
+        pass
