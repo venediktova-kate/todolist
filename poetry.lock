@@ -272,6 +272,16 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-commands"
+version = "0.7"
+description = "A django app that provides a plugin type model for integrating the front and backend."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-commands-0.7.tar.gz", hash = "sha256:561caaf2caec24bc85afddc4ba7694676883dd08b52a46e60be2edd854f5d829"},
+]
+
+[[package]]
 name = "django-environ"
 version = "0.10.0"
 description = "A package that allows you to utilize 12factor inspired environment variables to configure your Django application."
@@ -769,4 +779,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "831cda6c3331ffaaf56bb1bb1f64d7224fcc9add4a5550a384f7c2139a2ab6d5"
+content-hash = "f15b408824ed28b564751d48206249fca5f99789f07c5d01f41d4358b4196e0a"
