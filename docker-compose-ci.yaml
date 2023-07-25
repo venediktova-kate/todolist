@@ -52,6 +52,14 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - django_static:/usr/share/nginx/html/static
 
+  bot:
+    image: ${DOCKERHUB_USERNAME}/todolist:latest
+    env_file: .env
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+    command: python manage.py runbot
+
 volumes:
   todolist_db:
   django_static:
