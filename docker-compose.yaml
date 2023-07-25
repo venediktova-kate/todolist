@@ -67,12 +67,17 @@ services:
 
   bot:
     build: .
-    env_file: .env
+    env_file:
+      - .env
     environment:
       DB_HOST: db
     depends_on:
-      migrations:
-        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      api:
+        condition: service_started
+    volumes:
+      - ./bot:/opt/todolist/bot
     command: python manage.py runbot
 
 volumes:
