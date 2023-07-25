@@ -49,6 +49,6 @@ class TgClient:
     def __serialize_response(serializer_class: Type[T], data: dict) -> T:
         try:
             return serializer_class(**data)
-        except ValidationError as e:
+        except ValidationError:
             logger.error('Failed to serialize response with data %', data)
             raise TgClientException
