@@ -1,3 +1,5 @@
+import time
+
 from django.core.management import BaseCommand
 
 from bot.models import TgUser
@@ -47,7 +49,18 @@ class Command(BaseCommand):
                     goals_str = self.get_goals_list(tg_user=tg_user)
                     self.tg_client.send_message(msg.msg_from.id, goals_str)
                 case '/create':
-                    pass
+                    categories = self.get_categories_list(tg_user=tg_user)
+                    categories_list = list(categories.keys())
+                    if categories_list:
+                        category = self.select_category(categories_list, tg_user=tg_user)
+                        if category:
+                            goal_link = self.create_new_goal(tg_user=tg_user, category=categories[category])
+                            self.tg_client.send_message(
+                                tg_user.chat_id,
+                                goal_link)
+                    else:
+                        self.tg_client.send_message(msg.message_from.id, "У Вас пока нет категорий, невозможно создать цель")
+
                 case '/cancel':
                     pass
                 case _:
@@ -65,8 +78,42 @@ class Command(BaseCommand):
             goals_str = 'У вас пока нет добавленных целей'
         return goals_str
 
-    def get_categories_list(self, tg_user: TgUser):
-        pass
+    def get_categories_list(self, tg_user: TgUser) -> dict:
+        """
+        Функция возвращает все категории пользователя в словаре
+        """
+        categories = GoalCategory.objects.filter(user=tg_user.user, is_deleted=False)
+        categories_dict: dict = {category.title: category for category in categories}
+        return categories_dict
+
+    def select_category(self, categories_list: list[str], tg_user: TgUser):
+        """
+        Функция сохраняет выбранную пользователем категорию для последующего создания цели
+        """
+        categories_str = ''.join(categories_list)
+        category = ''
+        while category not in categories_list:
+            self.tg_client.send_message(tg_user.chat_id, f'Выберете категорию для создания цели: {categories_str}')
+            time.sleep(30)
+
+            category_response = self.tg_client.get_updates().result[-1].message.text
+            if category_response in categories_list:
+                category = category_response
+                self.tg_client.send_message(tg_user.chat_id, "Категория выбрана")
+                return category
+            elif category_response == '/cancel':
+                self.tg_client.send_message(tg_user.chat_id, "Отмена операции")
+                break
+            else:
+                self.tg_client.send_message(tg_user.chat_id, "Нет такой категории")
 
     def create_new_goal(self, tg_user: TgUser, category: GoalCategory):
-        pass
+        """
+        Функция создает и сохраняет цель
+        """
+        self.tg_client.send_message(tg_user.chat_id, "Введите название для новой цели:")
+        time.sleep(60)
+
+        title = self.tg_client.get_updates().result[-1].message.text
+        Goal.objects.create(category=category, title=title, user=tg_user.user)
+        return "Цель создана"
