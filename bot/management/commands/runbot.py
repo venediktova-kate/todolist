@@ -12,7 +12,6 @@ class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tg_client = TgClient()
-        self.offset = 0
 
     def handle(self, *args, **options):
         offset = 0
