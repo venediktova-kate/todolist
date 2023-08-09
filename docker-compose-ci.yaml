@@ -68,9 +68,9 @@ services:
     networks:
       - bot_nw
 
-  networks:
-    bot_nw:
-      driver: bridge
+networks:
+  bot_nw:
+    driver: bridge
 
 volumes:
   todolist_db:
